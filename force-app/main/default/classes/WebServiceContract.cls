@@ -2,11 +2,6 @@
 global with sharing class WebServiceContract {
 
     //---------------CREATE CONTRACT-----------------------//
-            /*Création d’un contrat : 
-        quand un contrat est créé dans le CRM AXG, 
-        les informations sont envoyées vers Salesforce et l’Id de Salesforce est sauvegardé.
-        */
-
     @HttpPost
     global static String createContract(String AccountId, Date StartDate, Integer ContractTerm, String Status) {
         
@@ -20,14 +15,10 @@ global with sharing class WebServiceContract {
         insert thisContract;
 
         return 'Nouveau contact crée, voici son ID: ' + thisContract.Id;
-
-        
     }
 
       //------------UPDATE CONTRACT-------------//
 
-    /*Modification d’un contrat : à chaque modification du contrat, 
-    il faut mettre à jour le contrat dans Salesforce en se basant sur l’Id de Salesforce.*/
     @HttpPatch
     global static Id updateContractFields() {   
         RestRequest request = RestContext.request;

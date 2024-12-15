@@ -15,6 +15,8 @@ global with sharing class WebServiceContact {
             contact.Email = email;
             insert contact;
             return 'Nouveau contact crée, voici son ID: ' + contact.Id;
+            
+
        }
        else {
             return 'Un contact existe déjà avec ce mail : ' + existingContacts[0].Email + ' possédant l\'ID suivant : ' + existingContacts[0].Id;
@@ -27,16 +29,16 @@ global with sharing class WebServiceContact {
 
     RestRequest request = RestContext.request;
     String contactId = request.requestURI.substring(request.requestURI.lastIndexOf('/')+1);
-    Contact thisContact = [SELECT Id, FirstName, LastName, Email FROM Contact WHERE Id = :contactId LIMIT 1];
+    List <Contact> thisContact = [SELECT Id, FirstName, LastName, Email FROM Contact WHERE Id = :contactId LIMIT 1];
 
-     if (thisContact != null) {
+     if (!thisContact.isEmpty()) {
             Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(request.requestbody.tostring());
 
         for(String fieldName : params.keySet()) {
-            thisContact.put(fieldName, params.get(fieldName));
+            thisContact[0].put(fieldName, params.get(fieldName));
          }
           update thisContact;
-          return thisContact.Id;
+          return thisContact[0].Id;
     }
         else {
              return 'Le contact avec l\'Id' + contactId + ' n\'existe pas.';
@@ -50,12 +52,13 @@ global with sharing class WebServiceContact {
    
     RestRequest request = RestContext.request;
     String contactId = request.requestURI.substring(request.requestURI.lastIndexOf('/')+1);
-    Contact thisContact = [SELECT Id, Active__c FROM Contact WHERE Id = :contactId];
 
-    if (thisContact != null) {
-        thisContact.Active__c = false;
-        update thisContact;
-        return 'Le contact : ' + thisContact.Id + ' n\'est plus actif.';
+    List <Contact> thisContact = [SELECT Id, Active__c FROM Contact WHERE Id = :contactId];
+
+    if (!thisContact.isEmpty()) {
+        thisContact[0].Active__c = false;
+        update thisContact[0];
+        return thisContact[0].Id;
     }
     else {
         return 'Contact introuvable avec cette Id.';
@@ -64,18 +67,13 @@ global with sharing class WebServiceContact {
     }
 
 
-
-
-    //------------ ACTIONS SUPPLEMENTAIRE-------------// 
-    @HttpGet
-    global static List<Contact> getAll() {   
-        RestRequest req = RestContext.request;
-        RestResponse res = RestContext.response;
-        List<Contact> result = [SELECT Id, Name FROM Contact];
+   
+       @HttpGet
+        global static Contact getContactById() {
+        RestRequest request = RestContext.request;
+        String contactId = request.requestURI.substring(
+          request.requestURI.lastIndexOf('/')+1);
+        Contact result =  [ SELECT Id, FirstName, LastName FROM Contact WHERE Id = :contactId];
         return result;
     }
-
-  
-    /*responseBody.put('error', message);
-            response.statusCode = 404;*/
 }
