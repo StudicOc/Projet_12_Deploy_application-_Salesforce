@@ -27,7 +27,8 @@ global with sharing class WebServiceContact {
     @HttpPatch
     global static ID updateContactFields() {
 
-    RestRequest request = RestContext.request;
+     RestRequest request = RestContext.request;
+     RestResponse response = RestContext.response;
     String contactId = request.requestURI.substring(request.requestURI.lastIndexOf('/')+1);
     List <Contact> thisContact = [SELECT Id, FirstName, LastName, Email FROM Contact WHERE Id = :contactId LIMIT 1];
 
@@ -41,7 +42,10 @@ global with sharing class WebServiceContact {
           return thisContact[0].Id;
     }
         else {
-             return 'Le contact avec l\'Id' + contactId + ' n\'existe pas.';
+        response.statusCode = 404;
+        response.responseBody = Blob.valueOf('{"error": "Le contact avec l\'Id : ' + contactId + ' n\'existe pas."}');
+        return null; // Retourne null car la réponse est gérée par RestContext.response
+
         }
     }
 

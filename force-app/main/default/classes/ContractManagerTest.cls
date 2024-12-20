@@ -34,15 +34,16 @@ public static void testCreateContractSuccess() {
         request.requestUri = '/services/apexrest/Contracts/' + contractId;
         request.httpMethod = 'PATCH';
         request.addHeader('Content-Type', 'application/json');
-        request.requestBody = Blob.valueOf('{"ContractTerm":3}');
+        request.requestBody = Blob.valueOf('{"ContractTerm":3,"StartDate":"2024-12-29"}');
         RestContext.request = request;
 
       
         Id updatedContractId = WebServiceContract.updateContractFields();
 
-        Contract updatedContract = [SELECT Id, ContractTerm FROM Contract WHERE Id = :updatedContractId];
+        Contract updatedContract = [SELECT Id, ContractTerm, StartDate FROM Contract WHERE Id = :updatedContractId];
         System.assertNotEquals(null, updatedContract, 'Updated contract should not be null.');
         System.assertEquals(3, updatedContract.ContractTerm, 'Contract term should be updated to 3.');
+        System.assertEquals(Date.newInstance(2024, 12, 29), updatedContract.StartDate, 'StartDate should be updated to 2024-12-29.');
     }
 
 

@@ -88,24 +88,40 @@ private class ContactManagerTest {
         System.assertEquals('Sophie', updatedContact.FirstName, 'Le prénom devrait être mis à jour à Sophie.');
     }
 
-    @IsTest
-    public static void testUpdateContactFieldsFails() {
-        Id contactId = TestDataFactory.createContact('Lucie', 'Duponds');
+ 
+@isTest
+public static void testUpdateContactFields_NonExistingContact() {
+    // Simuler une requête HTTP PATCH pour un ID valide mais inexistant
+    RestRequest req = new RestRequest();
+    RestResponse res = new RestResponse();
+    RestContext.request = req;
+    RestContext.response = res;
 
-        RestRequest request = new RestRequest();
-        request.requestUri = '/services/apexrest/Contacts/xxx'; // Simuler un ID invalide
-        request.httpMethod = 'PATCH';
-        request.addHeader('Content-Type', 'application/json');
-        request.requestBody = Blob.valueOf('{"FirstName": "Sophie"}');
-        RestContext.request = request;
+    req.requestURI = '/services/apexrest/contacts/003000000000000AAA'; // ID valide mais inexistant
+    req.httpMethod = 'PATCH';
+    req.requestBody = Blob.valueOf('{"FirstName": "NonExistant"}');
 
-        Test.startTest();
-        String response = WebServiceContact.updateContactFields();
-        Test.stopTest();
+    Test.startTest();
+    WebServiceContact.updateContactFields(); // Appel de la méthode
+    Test.stopTest();
 
-        System.assertNotEquals(null, response, 'La réponse ne devrait pas être nulle en cas d\'ID invalide.');
-        System.assertEquals('The ID of the contact to update is missing.', response, 'Le message d\'erreur devrait être retourné.');
-    }
+    // Vérifier le code de statut de la réponse
+    System.assertEquals(
+        404,
+        RestContext.response.statusCode,
+        'Le code de statut devrait être 404 en cas de contact introuvable.'
+    );
+
+    // Vérifier le contenu du corps de la réponse
+    String expectedResponse = '{"error": "Le contact avec l\'Id : 003000000000000AAA n\'existe pas."}';
+    System.assertEquals(
+        expectedResponse,
+        RestContext.response.responseBody.toString(),
+        'Le corps de la réponse retourné est incorrect.'
+    );
+}
+
+
 
     @IsTest
     public static void testDeactivateContact() {

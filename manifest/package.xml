@@ -3,8 +3,10 @@
     <types>
         <members>WebServiceContact</members>
         <members>WebServiceContract</members>
+        <members>WebServiceAccount</members>
         <members>ContactManagerTest</members>
         <members>ContractManagerTest</members>
+        <members>AccountManagerTest</members>
         
         <members>TestDataFactory</members>
         <name>ApexClass</name>
