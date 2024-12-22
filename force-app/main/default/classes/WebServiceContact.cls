@@ -43,8 +43,9 @@ global with sharing class WebServiceContact {
     }
         else {
         response.statusCode = 404;
+        response.addHeader('Content-Type', 'application/json');
         response.responseBody = Blob.valueOf('{"error": "Le contact avec l\'Id : ' + contactId + ' n\'existe pas."}');
-        return null; // Retourne null car la réponse est gérée par RestContext.response
+        return null; 
 
         }
     }
