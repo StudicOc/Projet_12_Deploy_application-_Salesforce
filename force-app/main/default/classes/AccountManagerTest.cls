@@ -6,13 +6,12 @@ private class AccountManagerTest {
 
 @IsTest
 public static void createAccount() {
-        // Mock the REST Request
+        // Moquer de la demande REST
         RestRequest request = new RestRequest();
         request.requestUri = '/services/apexrest/Accounts/';
         request.httpMethod = 'POST';
         request.addHeader('Content-Type', 'application/json');
 
-        // Corrected JSON payload
         request.requestBody = Blob.valueOf(
             '{' +
             '"Name": "Test Account",' +
@@ -22,7 +21,7 @@ public static void createAccount() {
 
         RestContext.request = request;
 
-        // Mock the REST Response
+        // Moquer de la réponse REST
         RestResponse response = new RestResponse();
         RestContext.response = response;
 
@@ -30,11 +29,11 @@ public static void createAccount() {
         String result = WebServiceAccount.createAccount('Test Account', '123-456-7890');
         Test.stopTest();
 
-        // Validate the Account creation
+        //Valider la création du compte
         Account thisAccount = [SELECT Id, Name FROM Account WHERE Name = 'Test Account' LIMIT 1];
         System.assertEquals('Test Account', thisAccount.Name, 'The account should have been inserted with the specified account name.');
 
-        // Validate the mocked response
+       // Définir le corps de la réponse pour validation
         response.responseBody = Blob.valueOf(result); // Set response body for validation
         System.assert(response != null, 'Response should not be null.');
         System.assert(response.responseBody.toString().contains(thisAccount.Id), 'The response should contain the account ID.');

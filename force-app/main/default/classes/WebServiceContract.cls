@@ -54,7 +54,12 @@ global static Id updateContractFields() {
 
 
 // Ajouter WEB SERVICE ACCOUNT -OK
+// Formule pour alimenter automatiquement le champs externalId à partir de l'id ou email -  a finir 
 // TERMINER LA CONFIGURATION HEROKU 
-// Formule pour alimenter automatiquement le champs externalId à partir de l'id ou email - OK
 // COMMENCER LA DOC = POSTMAN API REST - exporter collection au format json 
 
+//--20/12
+// Corriger externalID
+// Test de puis Heroku - montrer les resultats sur salesforce 
+// PGAdmin- PostGres 
+// DOC - deployement ( Salesforce + Heroky ( postgre + herokuConnect))
